@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+# define  bool int 
+#define BUFFER_SIZE 1024
 
 
 int binaryToDecimal(int n) 
@@ -31,7 +33,20 @@ int binaryToDecimal(int n)
 } 
 
 
-
+bool findParity(int x) 
+{ 
+    int y = x ^ (x >> 1); 
+    y = y ^ (y >> 2); 
+    y = y ^ (y >> 4); 
+    y = y ^ (y >> 8); 
+    y = y ^ (y >> 16); 
+  
+    // Rightmost bit of y holds the parity value 
+    // if (y&1) is 1 then parity is odd else even 
+    if (y & 1) 
+        return 1; 
+    return 0; 
+} 
 
 
 int main()
@@ -47,22 +62,38 @@ int main()
     char singleLine[9];
     int num;
     int dec;
+    bool tof;
     
     printf("Original      ASCII       Decimal        Parity       T. Error \n");
     printf("--------      -----       -------        -------      ---------\n");
 
+
+//tokenize 
+
     while (!feof(fptr)){ //while not at end of file
         //if character = " " or /n then do not include it 
+        // need a delimiter 
+
 
         fgets(singleLine,9, fptr); //retrieves next 8 characters in file
+
+
         num = atoi(singleLine); //string -> int
-        printf("%d",num);
+
+        printf("%d",num); //prints original as an int 
         printf("\t\t");
+
+        int c = num; 
+        printf("%c", c);
+        printf("\t\t");
+
         dec = binaryToDecimal(num);
         printf("%d",dec);
+        printf("\t\t");
 
+        (findParity(dec)==0)?printf("Even       FALSE\n"): 
+                             printf("Odd         TRUE\n");
 
-       
     }
   
     fclose(fptr); 
