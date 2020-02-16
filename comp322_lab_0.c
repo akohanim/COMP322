@@ -2,129 +2,132 @@
 // 106776512
 // Comp 322 Lab 0
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
+#include<stdio.h>  
+#include<string.h>  
+#include<stdlib.h>  
+#include<unistd.h>  
+#include <fcntl.h>
 # define  bool int 
-#define BUFFER_SIZE 1024
 
-
-int binaryToDecimal(int n) 
+bool getParity(unsigned int n) 
 { 
-    int num = n; 
-    int dec_value = 0; 
-  
-    // Initializing base value to 1, i.e 2^0 
-    int base = 1; 
-  
-    int temp = num; 
-    while (temp) { 
-        int last_digit = temp % 10; 
-        temp = temp / 10; 
-  
-        dec_value += last_digit * base; 
-  
-        base = base * 2; 
-    } 
-  
-    return dec_value; 
+    bool p = 0; 
+    while (n) 
+    { 
+        p = !p; 
+        n      = n & (n - 1); 
+    }         
+    return p; 
 } 
 
-
-bool findParity(int x) 
-{ 
-    int y = x ^ (x >> 1); 
-    y = y ^ (y >> 2); 
-    y = y ^ (y >> 4); 
-    y = y ^ (y >> 8); 
-    y = y ^ (y >> 16); 
-  
-    // Rightmost bit of y holds the parity value 
-    // if (y&1) is 1 then parity is odd else even 
-    if (y & 1) 
-        return 1; 
-    return 0; 
-} 
-
-
-int main()
+int main(int argc, char*argv[])
 {
-      
-    FILE *fptr; 
+	char numberStr[9], chr;
+	int filedes, bytes, value, count,parity, i,j,k,a,b;
+	
+		printf("Original\tASCII\tDecimal\tParity\tT.Error\n");
+		printf("--------\t-----\t-------\t------\t--------\n");
+
+	if (argc == 2) // case a file is provided 
+	{
+		//printf("using a file");
+
+		filedes = open(argv[1], O_RDONLY, 0);
+		value = 0;
+		count = 0;
+		parity = 0;
+		bytes = read(filedes, &chr, 1);
+			
+			
+			while (bytes == 1) //caluculates the value of the string of 1s & 0s   
+			{
+				if (chr == '0' && count < 8) 
+				{
+					value *= 2;
+					numberStr[count++] = chr;
+				}
+				else if (chr == '1' && count < 8)
+				{
+					value *= 2;
+					value += 1;
+					numberStr[count++] = chr;
+					parity++;
+				}
+				else // if at end of string 
+				{
+					numberStr[count++] = 0;
+					count = 0;
+					//
+					printf("%8s    %c       %3d  %-5s  %-5s\n", numberStr, (char)(value%128), value % 128,
+					parity & 1 ? "ODD" : "EVEN",
+					value > 128 ? "FALSE" : "TRUE");
+
+					value = 0;
+					parity = 0;
+				}
+				bytes = read(filedes, &chr, 1);
+			}
+			while (count < 8)
+			{
+				value *= 2;
+				numberStr[count++] = '0';
+			}
+			numberStr[count++] = 0;
+			printf("%8s        %c      %3d  %-5s  %-5s\n", numberStr, (char)(value%128), value % 128,
+				parity & 1 ? "ODD" : "EVEN",
+				value > 128 ? "FALSE" : "TRUE");
+			close(filedes);
+
+	}
+
+	else if (argc >= 2)
+		{
+		for (i=1; i < argc; i++)
+			{
+            printf("%s",argv[i]); 
+
+			int len = strlen( argv[i] );
+			// printf("\t %d",len); uncomment for size of arg
+
+       			value = 0;
+				count = 0;
+				parity = 0;
+
+                for (j=1;j<8; j++){ 
+                
+				chr = argv[i][j]; 
+                
+				if (chr == '0' && count < 8) 
+				{
+					value *= 2;
+
+				}
+				else if (chr == '1' && count < 8)
+				{
+					value *= 2;
+					value += 1;
+
+					parity++;
+				}
+				else // if at end of string 
+				{
+					count = 0;
+					value = 0;
+					parity = 0;
+				}
+
+			}
+				printf("\t%c \t %3d \t %-5s \t %-5s\n", (char)(value%128), value % 128,
+				parity & 1 ? "ODD" : "EVEN",
+				value > 128 ? "FALSE" : "TRUE");
+
+				//printf((getParity((char)(value%128))? "odd\n": "even\n"));
+         
+                    
+                
+				
+        }
+	}
     
-    //printf("Enter the filename to open \n"); 
-    //scanf("%s", filename); 
-
-
-    fptr = fopen("sampletxt.txt", "r") ; 
-    char singleLine[9];
-    int num;
-    int dec;
-    bool tof;
-    
-    printf("Original      ASCII       Decimal        Parity       T. Error \n");
-    printf("--------      -----       -------        -------      ---------\n");
-
-
-//tokenize 
-
-    while (!feof(fptr)){ //while not at end of file
-        //if character = " " or /n then do not include it 
-        // need a delimiter 
-
-
-        fgets(singleLine,9, fptr); //retrieves next 8 characters in file
-
-
-        num = atoi(singleLine); //string -> int
-
-        printf("%d",num); //prints original as an int 
-        printf("\t\t");
-
-        int c = num; 
-        printf("%c", c);
-        printf("\t\t");
-
-        dec = binaryToDecimal(num);
-        printf("%d",dec);
-        printf("\t\t");
-
-        (findParity(dec)==0)?printf("Even       FALSE\n"): 
-                             printf("Odd         TRUE\n");
-
-    }
-  
-    fclose(fptr); 
-  
-   return 0;
+	return 0;
 }
-
-
-
-
-
-
-// void nextEight(){
-//    char c;
-//    while((c = fgetc(fp)) != EOF)
-//       {
-//          if(c == ' ' || c == '\n')
-//          {
-            
-//          }
-//          else
-//          {
-//             printf("%c", c);
-//          }
-//       }
-// }
-
-// void read_words (FILE *fptr) {
-//     char x[9];
-//     /* assumes no word exceeds length of 1023 */
-//     while (fscanf(fptr, " %8s", x) == 1) {
-//         puts(x);
-//     }
-// }
