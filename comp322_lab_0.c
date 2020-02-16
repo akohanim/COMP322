@@ -27,8 +27,11 @@ int main(int argc, char*argv[])
 	
 		printf("Original\tASCII\tDecimal\tParity\tT.Error\n");
 		printf("--------\t-----\t-------\t------\t--------\n");
-
-	if (argc == 2) // case a file is provided 
+    if (argc == 1)
+    {
+        printf("error, invalid argument");
+    }
+	else if (argc == 2) // case a file is provided 
 	{
 		//printf("using a file");
 
@@ -119,12 +122,7 @@ int main(int argc, char*argv[])
 				if (chr == '0' && count < 8) 
 				{
 					value *= 2;
-
 				}
-
-                
-
-
 
 				else if (chr == '1' && count < 8)
 				{
@@ -133,18 +131,16 @@ int main(int argc, char*argv[])
 
 					parity++;
 				}
+
                 else if (chr == '-' && count < 8){
                     printf("error");
                 }
 			}
 				printf("\t%c \t %3d ", (char)(value%128), value % 128);
-
-
 				printf((getParity(value%128)? "\todd\n": "\teven\n"));
-            
-    
         }
 	}
+
     
 	return 0;
 }
