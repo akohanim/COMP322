@@ -137,10 +137,10 @@ int main(int argc, char*argv[])
                     printf("error");
                 }
 			}
-				printf("\t%c \t %3d \n", (char)(value%128), value % 128);
+				printf("\t%c \t %3d ", (char)(value%128), value % 128);
 
 
-				printf((getParity(value%128)? "\todd\t": "\teven\t"));
+				printf((getParity(value%128)? "\todd\n": "\teven\n"));
             
     
         }
