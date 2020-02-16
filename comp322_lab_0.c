@@ -9,7 +9,7 @@
 #include <fcntl.h>
 # define  bool int 
 
-bool getParity(unsigned int n) 
+bool getParity( int n) 
 { 
     bool p = 0; 
     while (n) 
@@ -23,7 +23,7 @@ bool getParity(unsigned int n)
 int main(int argc, char*argv[])
 {
 	char numberStr[9], chr;
-	int filedes, bytes, value, count,parity, i,j,k,a,b;
+	int myFile, bites, value, count,parity, i,j,k,a,b;
 	
 		printf("Original\tASCII\tDecimal\tParity\tT.Error\n");
 		printf("--------\t-----\t-------\t------\t--------\n");
@@ -32,20 +32,21 @@ int main(int argc, char*argv[])
 	{
 		//printf("using a file");
 
-		filedes = open(argv[1], O_RDONLY, 0);
+		myFile = open(argv[1], O_RDONLY, 0);
 		value = 0;
 		count = 0;
 		parity = 0;
-		bytes = read(filedes, &chr, 1);
+		bites = read(myFile, &chr, 1);
 			
 			
-			while (bytes == 1) //caluculates the value of the string of 1s & 0s   
+			while (bites == 1) //caluculates the value of the string of 1s & 0s   
 			{
 				if (chr == '0' && count < 8) 
 				{
 					value *= 2;
 					numberStr[count++] = chr;
 				}
+                
 				else if (chr == '1' && count < 8)
 				{
 					value *= 2;
@@ -53,7 +54,7 @@ int main(int argc, char*argv[])
 					numberStr[count++] = chr;
 					parity++;
 				}
-				else // if at end of string 
+				else 
 				{
 					numberStr[count++] = 0;
 					count = 0;
@@ -65,7 +66,7 @@ int main(int argc, char*argv[])
 					value = 0;
 					parity = 0;
 				}
-				bytes = read(filedes, &chr, 1);
+				bites = read(myFile, &chr, 1);
 			}
 			while (count < 8)
 			{
@@ -76,7 +77,7 @@ int main(int argc, char*argv[])
 			printf("%8s        %c      %3d  %-5s  %-5s\n", numberStr, (char)(value%128), value % 128,
 				parity & 1 ? "ODD" : "EVEN",
 				value > 128 ? "FALSE" : "TRUE");
-			close(filedes);
+			close(myFile);
 
 	}
 
@@ -84,6 +85,7 @@ int main(int argc, char*argv[])
 		{
 		for (i=1; i < argc; i++)
 			{
+ 
             printf("%s",argv[i]); 
 
 			int len = strlen( argv[i] );
@@ -92,6 +94,23 @@ int main(int argc, char*argv[])
        			value = 0;
 				count = 0;
 				parity = 0;
+
+            // if (len < 8){ //function to append last item with "0s"
+
+            //         int temp,q;
+            //         temp = 8-len;
+            //         char mytemp[8];
+            //         char src[7], dest[8];
+
+            //         argv[i]= dest;
+            //         strcpy(src,  "This is source");
+            //         //strcpy(dest, dest[]);
+
+            //         strcat(argv[i], dest);
+
+            //         printf("Final destination string : |%s|", dest);
+            //     }   
+
 
                 for (j=1;j<8; j++){ 
                 
@@ -102,6 +121,11 @@ int main(int argc, char*argv[])
 					value *= 2;
 
 				}
+
+                
+
+
+
 				else if (chr == '1' && count < 8)
 				{
 					value *= 2;
@@ -109,23 +133,16 @@ int main(int argc, char*argv[])
 
 					parity++;
 				}
-				else // if at end of string 
-				{
-					count = 0;
-					value = 0;
-					parity = 0;
-				}
-
+                else if (chr == '-' && count < 8){
+                    printf("error");
+                }
 			}
-				printf("\t%c \t %3d \t %-5s \t %-5s\n", (char)(value%128), value % 128,
-				parity & 1 ? "ODD" : "EVEN",
-				value > 128 ? "FALSE" : "TRUE");
+				printf("\t%c \t %3d \n", (char)(value%128), value % 128);
 
-				//printf((getParity((char)(value%128))? "odd\n": "even\n"));
-         
-                    
-                
-				
+
+				printf((getParity(value%128)? "\todd\t": "\teven\t"));
+            
+    
         }
 	}
     
