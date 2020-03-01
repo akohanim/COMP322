@@ -53,15 +53,15 @@ int main(void)
 
     pid = fork();
     
-    if (pid == 0)
+    if (pid == 0) 
     {
-        func1();
+        func1(); 
     }
 
-    else if (pid > 0)
+    else if (pid > 0)// PID of the newly created child process
     {
-        waitpid(pid, &status, WUNTRACED);
-        func2();
+        waitpid(pid, &status, WUNTRACED); 
+        func2(); //prints out pid, ppid, cpid, retval and times
        
     }
     else {
