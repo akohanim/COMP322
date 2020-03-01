@@ -15,11 +15,3 @@ OBJ= comp322_lab1.c
 
 CC=gcc
 CFLAGS=-g
-
-all: $(EXECUTABLES)
-
-$(EXECUTABLES): $(SRC)
-	$(CC) $(CFLAGS) -c $(SRC)
-	$(CC) $(CFLAGS) -o $@ $(OBJ)
-
-rm -f $(EXECUTABLES) $(OBJ) *~
