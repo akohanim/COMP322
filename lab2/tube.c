@@ -6,14 +6,12 @@
 #include <sys/types.h> /* pid_t */
 #include <unistd.h>  /* _exit, fork */
 #include <stdlib.h>  /* exit */
-#include <errno.h>   /* errno */
+#include <errno.h>   
+#include <sys/wait.h>
+
+int main(int argc, char** argv){
 
 
-int main(void)
-{
-pid_t  pid;
 
 
-
-return 0;
 }
