@@ -2,14 +2,21 @@
 // 106776512
 // Comp 322 Lab 2
 
-#include <stdio.h>   /* printf, stderr, fprintf */
+#include <stdio.h>  
 #include <sys/types.h> /* pid_t */
 #include <unistd.h>  /* _exit, fork */
-#include <stdlib.h>  /* exit */
+#include <stdlib.h>  
 #include <errno.h>   
 #include <sys/wait.h>
 
-void func1(int argc, char** argv)
+
+void func1(){
+	printf( stderr, "%s: $$ = %d\n", argv[1], getpid());
+	waitpid(pid, &status, WUNTRACED);
+	printf( stderr, "%s: $? = %d\n", argv[1], status);
+}
+
+void func2(int argc, char** argv)
 {
 	char *newargv[argc];
 
@@ -17,14 +24,11 @@ void func1(int argc, char** argv)
 	{
 		newargv[i - 1] = argv[i];
 	}
-
 	execve(argv[1], newargv, NULL); // must take 3 parameters 
-
 	//if theres an error
 	perror("execve"); 
-       	exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }
-
 
 
 int main(int argc, char** argv)
@@ -35,7 +39,6 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
-
 	int status;
 	pid_t  pid;
 
@@ -43,15 +46,11 @@ int main(int argc, char** argv)
 
     if(pid > 0)
 	{
-		printf( stderr, "%s: $$ = %d\n", argv[1], getpid());
-
-		//The parent prints the return value of the child on stderr    (see waitpid(2))
-		waitpid(pid, &status, WUNTRACED);
-		printf( stderr, "%s: $? = %d\n", argv[1], status);
+		func1();
     }
 	else if(pid == 0)
 	{
-			func1(argc, argv);
+		func2(argc, argv);
 	}
 
 	else
