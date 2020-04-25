@@ -24,7 +24,7 @@ static int counter = 0;
 void processCmdArgs(int argc, char** argv, int catcherArray[]){ //The program processes the command line arguments
 	//nested loop to process desired arguments
 	for(int i = 1; i < argc; i++){
-		for(int j = 0; j < 30; j++){ 
+		for(int j = 0; j < 27; j++){ 
 			if(strcmp(sigs[j], argv[i]) == 0){ // if the argument is a match to one of the sigs above
 				catcherArray[i - 1] = j + 1; //store the argument label in catcherArray
 				break;
@@ -46,7 +46,7 @@ void signalHandler(int signal)
 void signalHelper(int argc, int catcherArray[])
 {
 	while(sigterm < 4){  //The program gracefully terminates after receiving three successive SIGTERM signals	
-		for(int k = 0; k < 30; k++){
+		for(int k = 0; k < 27; k++){
 			signal(k, SIG_IGN);
 		}
 
