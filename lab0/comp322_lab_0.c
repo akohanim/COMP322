@@ -7,7 +7,7 @@
 #include<stdlib.h>  
 #include<unistd.h>  
 #include <fcntl.h>
-# define  bool int 
+#define bool int 
 
 bool getParity( int n) 
 { 

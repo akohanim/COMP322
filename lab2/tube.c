@@ -10,7 +10,6 @@
 #include <sys/wait.h>
 #include <string.h> 
 
-
 #define BUFFER_SIZE 25
 #define READ_END 0
 #define WRITE_END 1
@@ -88,7 +87,6 @@ int main(int argc, char** argv){
 
 	child_2 = fork();
 	
-
 	//Error fork fail
 	if(child_2 < 0)
 	{
@@ -109,7 +107,7 @@ int main(int argc, char** argv){
 		write(pipefd[WRITE_END], buffer2, sizeof(buffer2));
 
 		close(pipefd[WRITE_END]);//close write end
-		
+
 		waitpid(child_1, &status_1, WUNTRACED);
 		waitpid(child_2, &status_2, WUNTRACED);
 

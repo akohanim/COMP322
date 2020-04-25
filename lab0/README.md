@@ -11,3 +11,5 @@ takes the following arguments from the command line
 This program works as intended and by the criteria described by the lab writeup Making Sense of Ones and Zeros and later in class and on canvas. 
 
 This program has gone through a series of changes to accomodate the dynamic criteria. As well as changes once i realized there was a far more efficient way to write this program.
+
+4-24-20: deleted extra file (sampletxt.txt) 
