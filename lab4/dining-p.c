@@ -12,28 +12,30 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 
 //create philosopher structure 
 struct Philosopher{
     int seats;
     int position;
     int cycles;
-    char buff1[32];
-    char buff2[32];
-    sem_t* chopsticks[2];
+
+    sem_t* chopstick[2];
+    sem_t* returnVal;
+
+    char buffer[32];
+    char buffer1[32];
 } philosopher;
 
-//globals 
-int counter = 0;
 
-void eat (phil_position){
+void eat (){
 usleep(rand());
 printf("Philosopher #%d is eating \n", philosopher.position);
 }
 
-void think(phil_position){
+void think(){
 usleep(rand());
-printf("Philosopher #%d is thinking \n", philosopher.position)
+printf("Philosopher #%d is thinking \n", philosopher.position);
 }
 
 //part 1 step 3 
@@ -41,46 +43,54 @@ void sigHandler(int sig)
 {
     signal(SIGTERM, sigHandler);
     if (sig == SIGTERM){
-        sem_destroy(philosopher)
-        sem_close(philosopher.chopsticks[0]);
-        sem_close(philosopher.chopsticks[1]);
-        sem_unlink(philosopher.buff1);
-        sem_unlink(philosopher.buff2);
+       // sem_destroy()
+        sem_close(philosopher.chopstick[0]);
+        sem_close(philosopher.chopstick[1]);
+        sem_unlink(philosopher.buffer);
+        sem_unlink(philosopher.buffer1);
         
         }
     fprintf(stderr, "Philosopher [%d] completed %d cycles\n", philosopher.position, philosopher.cycles);
 }
 
 int main(int argc, char** argv){
+    //arg 1 = program name , 2 = seats, 3 = position 
+    philosopher.seats = atoi(argv[1]);
+    philosopher.position = atoi(argv[2]); //converts string arg to int 
 
-    int philosopher.position = atoi(argv[2]); //converts string arg to int 
-    int i;
-    int seats;
+
+    //4a. allocate a semaphore for each chopstick 
+    philosopher.returnVal = sem_open(philosopher.buffer, O_CREAT, 0666, 1);
+        if (philosopher.returnVal == SEM_FAILED ) { 
+            perror(NULL); 
+            philosopher.returnVal = sem_open(SEM_FILE1, 0);
+        }
+    philosopher.chopstick[0]=  philosopher.returnVal;
+
+    philosopher.returnVal = sem_open(philosopher.buffer1, O_CREAT, 0666, 1);
+        if (philosopher.returnVal == SEM_FAILED ) { 
+            perror(NULL); 
+            philosopher.returnVal = sem_open(SEM_FILE1, 0);
+        }
+    philosopher.chopstick[1]=  philosopher.returnVal;
+
+
     
-    sem_t chopstick[5];
     while(1) {
-        sem_wait(chopstick[i]);
-        sem_wait(chopstick[(i + 1) % seats]);
+        //4b
+        sem_wait(philosopher.chopstick[0]);
+        sem_wait(philosopher.chopstick[(1) % philosopher.seats]);
 
-        eat();
+        eat(philosopher.position);
+        //4c
+        sem_post(philosopher.chopstick[0]);
+        sem_post(philosopher.chopstick[(1) % philosopher.seats]);
 
-        sem_post(chopstick[i]);
-        sem_post(chopstick[(i + 1) % seats]);
+        think(philosopher.position);
+        philosopher.cycles +=1;
 
-        think();
-
-        counter++; 
     }
-    //part 1 step 3 
-    // signal(SIGTERM, handle_sigint); 
-    //     while (1) 
-    //     { 
-    //         printf("SIGTERM (%d) received...\n", handle_sigint);
-    //         int sem_destroy(sem_t *sem);
-    //         sem_destroy()
-
-    //     } 
-        
+    //needs debugging 
 
     return 0;
 }
