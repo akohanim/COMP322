@@ -14,6 +14,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#define SEM_FILE1  "/chopstick_1A"
+#define SEM_FILE2  "/chopstick_2"
+
 //create philosopher structure 
 struct Philosopher{
     int seats;
@@ -55,6 +58,12 @@ void sigHandler(int sig)
 
 int main(int argc, char** argv){
     //arg 1 = program name , 2 = seats, 3 = position 
+
+    if (argc != 3){
+        printf(" 3 arguments only porfavor");
+        return 0;
+    }
+
     philosopher.seats = atoi(argv[1]);
     philosopher.position = atoi(argv[2]); //converts string arg to int 
 
@@ -81,16 +90,19 @@ int main(int argc, char** argv){
         sem_wait(philosopher.chopstick[0]);
         sem_wait(philosopher.chopstick[(1) % philosopher.seats]);
 
-        eat(philosopher.position);
+        //eat(philosopher.position);
+        eat();
         //4c
         sem_post(philosopher.chopstick[0]);
         sem_post(philosopher.chopstick[(1) % philosopher.seats]);
 
-        think(philosopher.position);
+       // think(philosopher.position);
+        think();
         philosopher.cycles +=1;
 
     }
     //needs debugging 
+    //complies with no errors but no output 
 
     return 0;
 }
