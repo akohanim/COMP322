@@ -28,6 +28,7 @@ struct Philosopher{
 
     char buffer[32];
     char buffer1[32];
+
 } philosopher;
 
 
@@ -64,8 +65,8 @@ int main(int argc, char** argv){
         return 0;
     }
 
-    philosopher.seats = atoi(argv[1]);
-    philosopher.position = atoi(argv[2]); //converts string arg to int 
+    philosopher.seats = atoi(argv[1]); //converts string arg to int
+    philosopher.position = atoi(argv[2]);  
 
 
     //4a. allocate a semaphore for each chopstick 
@@ -83,7 +84,7 @@ int main(int argc, char** argv){
         }
     philosopher.chopstick[1]=  philosopher.returnVal;
 
-
+    philosopher.cycles = 0;
     
     while(1) {
         //4b
@@ -98,10 +99,11 @@ int main(int argc, char** argv){
 
        // think(philosopher.position);
         think();
-        philosopher.cycles +=1;
+        philosopher.cycles += 1;
+        printf("+1");
 
     }
-    //needs debugging 
+    
     //complies with no errors but no output 
 
     return 0;
