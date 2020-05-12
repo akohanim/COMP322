@@ -5,4 +5,4 @@ Ariel Kohanim COMP 322 Lab 5: Paging
 
 ![](Screen%20Shot%202020-05-12%20at%2010.12.49%20AM%201.png)
 
-5/12/20 - project works flawlessly. 
+5/12/20 - added make file, project works flawlessly. 
