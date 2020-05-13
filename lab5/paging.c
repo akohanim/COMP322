@@ -3,18 +3,10 @@
 // Comp 322 Lab 5 
 
 #include <stdio.h>
-#include <semaphore.h>
-#include <signal.h>
-
 #include <string.h>
 #include <unistd.h>
-#include <time.h>
 #include <stdlib.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
-//dont need alot of the libraries above, but w/e 
 
 void printStuff(int a, int b, int c){
    printf("The address %d contains: \n", a);
