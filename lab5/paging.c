@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-
 void printStuff(int a, int b, int c){
    printf("The address %d contains: \n", a);
    printf("Page Number = %d \n", b);
