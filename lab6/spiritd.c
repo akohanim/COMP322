@@ -18,13 +18,16 @@
 #include <syslog.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <limits.h>
 #include <unistd.h>
 
-
+pid_t mole, child;
+unsigned int moleChild,liveChild;
+char cwd[PATH];
 
 void daemonize(const char *cmd){
     int i, fd0, fd1, fd2;
-    pid_t mole;
+
     struct rlimit rl;
     struct sigaction sa;
 
@@ -32,10 +35,10 @@ void daemonize(const char *cmd){
     umask(0); 
 
     //fork and gave parent exit
-    if ((pid = fork())<0)
+    if ((mole = fork())<0)
     err_quit("%s: cant fotk",cmd);
 
-    else if (pid != 0){
+    else if (mole != 0){
         exit(0);
     }
     //create a new session & create new proccess group 
@@ -73,14 +76,15 @@ void signalHandler(void)
     int i;
 
         //if SIG_TERM, program kills all child processes and shutdowns the daemon gracefully 
-        if(strcmp(sigs[0], argv[0]) == 0){
+        if(sig == SIGTERM & mole != 0){
 	           //kills child process
-		        kill(mole , SIG_TERM); //kill2
+		        kill(mole , SIGKILL); //kill2
 	        }
+            kill(getpid(), SIGKILL);
 
         //if SIG_USR1, the program will kill child process #1 (mole1) or mole 2 if it does not already exist 
         else if(strcmp(sigs[1], argv[0]) == 0)){
-            if(mole_child != 0){
+            if(child != 0){
 		        kill(mole, SIGKILL);
             }
 
@@ -90,7 +94,43 @@ void signalHandler(void)
             exit(EXIT_SUCCESS);
 }
     
+void molarize()
+{
+    //fork a new process                   
+	mole = fork();
+
+    //Randomly choose if child process number is 1 or 2
+	liveChild = (rand() % 2) + 1;
 
 
+	if(liveChild == 1 && moleChild == 0)
+	{
+        //exec the program mole with val of argv[0] set to mole1
+		char* newArg[] = {"mole1", NULL};
+		execv(cwd, newArg);
+	}
 
+	if(liveChild == 2 && moleChild == 0)
+	{
+        //exec the program mole with val of argv[0] set to mole1
+		char* newArg[] = {"mole2", NULL};
+		execv(cwd, newArg);
+	}
+}
 
+int main()
+{
+
+	getcwd(cwd, sizeof(cwd));
+	strcat(cwd, "/mole\0");
+
+	daemonize();
+
+    //infinite loop  to keep daemon running 
+	while(1)
+	{
+
+    }
+
+	return 0;
+}
