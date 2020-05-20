@@ -41,8 +41,6 @@ void daemonize(){
         return0;
     }
     
-
-
     else if (mole != 0){
         return 0;
     }
@@ -71,8 +69,6 @@ void daemonize(){
 
 }
 
-
-}
 //part2
 
 void signalHandler(void)
@@ -92,21 +88,21 @@ void signalHandler(void)
             if(child != 0){
 		        kill(mole, SIGKILL);
             }
+        }
 
         //USER2 program will kill chil process #1(mole2) randomly create either mole1 or mole 2 if it does not already exists
         else if(strcmp(sigs[2], argv[0]) == 0)){    
-
-            exit(EXIT_SUCCESS);
+                exit(EXIT_SUCCESS);
+        }
+    
 }
     
-void molarize()
-{
+void molarize() {
     //fork a new process                   
 	mole = fork();
 
     //Randomly choose if child process number is 1 or 2
 	liveChild = (rand() % 2) + 1;
-
 
 	if(liveChild == 1 && moleChild == 0)
 	{
@@ -123,12 +119,7 @@ void molarize()
 	}
 }
 
-int main()
-{
-
-	// getcwd(cwd, sizeof(cwd));
-	// strcat(cwd, "/mole\0");
-
+int main(){
 
 
     //infinite loop  to keep daemon running 
