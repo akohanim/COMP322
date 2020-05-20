@@ -20,12 +20,13 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 pid_t mole, child;
 unsigned int moleChild,liveChild;
 char cwd[PATH];
 
-void daemonize(const char *cmd){
+void daemonize(){
     int i, fd0, fd1, fd2;
 
     struct rlimit rl;
@@ -35,11 +36,15 @@ void daemonize(const char *cmd){
     umask(0); 
 
     //fork and gave parent exit
-    if ((mole = fork())<0)
-    err_quit("%s: cant fotk",cmd);
+    if ((mole = fork())<0){
+        fprintf("cant fork");
+        return0;
+    }
+    
+
 
     else if (mole != 0){
-        exit(0);
+        return 0;
     }
     //create a new session & create new proccess group 
     setsid();
@@ -121,15 +126,15 @@ void molarize()
 int main()
 {
 
-	getcwd(cwd, sizeof(cwd));
-	strcat(cwd, "/mole\0");
+	// getcwd(cwd, sizeof(cwd));
+	// strcat(cwd, "/mole\0");
 
-	daemonize();
+
 
     //infinite loop  to keep daemon running 
 	while(1)
 	{
-
+	    daemonize();
     }
 
 	return 0;
